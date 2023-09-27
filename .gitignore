@@ -1,0 +1,27 @@
+# Byte-compiled / optimized / DLL files
+__pycache__/
+
+# DotEnv configuration
+.env
+
+# Database
+*.db
+*.rdb
+
+# VS Code
+.vscode/
+
+# Jupyter NB Checkpoints
+.ipynb_checkpoints/
+
+# exclude data from source control by default
+/data/
+
+# Mypy cache
+.mypy_cache/
+
+.pytest_cache/
+LICENSE
+Makefile
+test_environment.py
+
