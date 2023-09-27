@@ -16,10 +16,10 @@ class KeyPointsCSVWriter:
         self.logger = self._configure_logger()
 
     def _configure_logger(self) -> logging.Logger:
-        logger = logging.getLogger(__name__)
+        logger = logging.getLogger(f"{__name__}.{self.__class__.__name__}")
         if not logger.handlers:
             logger.setLevel(logging.WARNING)
-            handler = logging.FileHandler(f"loggs/{__name__}.log")
+            handler = logging.FileHandler("loggs/csv_writer.log")
             formatter = logging.Formatter("%(asctime)s - %(levelname)s - %(message)s")
             handler.setFormatter(formatter)
             logger.addHandler(handler)
@@ -101,11 +101,11 @@ class KeyPointsVideoWriter:
         self.logger = self._configure_logger()
 
     def _configure_logger(self) -> logging.Logger:
-        logger = logging.getLogger(__name__)
+        logger = logging.getLogger(f"{__name__}.{self.__class__.__name__}")
         if not logger.handlers:
             logger.setLevel(logging.INFO)
 
-            file_handler = logging.FileHandler(f"loggs/{__name__}.log")
+            file_handler = logging.FileHandler("loggs/video_writer.log")
             file_formatter = logging.Formatter(
                 "%(asctime)s - %(levelname)s - %(message)s"
             )
