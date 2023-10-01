@@ -2,6 +2,7 @@
 
 from pathlib import Path
 
+
 from src.data.keypoints_factories import csv_keypoints_factory, video_keypoints_factory
 from src.load_config import load_config
 from src.models.initialize_models import initialize_yolo_model
