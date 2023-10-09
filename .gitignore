@@ -15,7 +15,10 @@ __pycache__/
 .ipynb_checkpoints/
 
 # exclude data from source control by default
-/data/
+/data/actions
+/data/player_detections
+/data/scenes
+/data/debug/processed
 
 # Mypy cache
 .mypy_cache/
@@ -24,4 +27,3 @@ __pycache__/
 LICENSE
 Makefile
 test_environment.py
-
