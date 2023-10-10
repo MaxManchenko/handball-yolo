@@ -1,9 +1,25 @@
 import cv2
 
 
-VIDEO = "./data/raw/scenes/crossing/crossing_KS_1.mp4"
-MARKUP = "./data/raw/player_detections/crossing/crossing_KS_1.csv"
+VIDEO = "./data/scenes/crossing/crossing_KS_1.mp4"
+MARKUP = "./data/player_detections/crossing/crossing_KS_1.csv"
 VIDEO_OUT = "./data/processed/output_2.avi"
+
+
+
+
+from src.data.bboxes_processor import VideoBoundingBoxProcessor
+
+
+processor = VideoBoundingBoxProcessor(VIDEO, MARKUP, VIDEO_OUT)
+processor.process_video()
+
+
+
+
+
+
+
 
 
 def video_loader(file_path_in):
