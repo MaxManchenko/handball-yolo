@@ -1,13 +1,14 @@
 data:
   root: data
-  actions: actions
-  scenes: scenes
+  actions: interim/actions
+  scenes: interim/scenes
   csv_kpoints: processed/scenes
 
-  auto_layout: auto_layout
+  auto_labeling: processed/auto_labeling
   debug_actions: debug/actions # for debugging
   debug_scenes: debug/scenes
-  test: data
+  test: data/test
+  train: data/train
 
 
 

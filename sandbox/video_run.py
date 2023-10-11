@@ -82,6 +82,8 @@ class KeyPointsVideoWriter:
                     break  # Break the loop if we reach the end of the video
 
                 frame_keypoints = keypoints_dict.get(frame_index, {})
+                
+                
                 for person_keypoints in frame_keypoints.values():
                     # Draw points
                     for _, x, y, _ in person_keypoints:
@@ -151,3 +153,6 @@ pairs = [
 writer = KeyPointsVideoWriter(pairs)
 
 writer.write_video_with_keypoints(video_path_in, video_path_out, csv_path_in)
+
+
+

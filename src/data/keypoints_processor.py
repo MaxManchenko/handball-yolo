@@ -15,7 +15,7 @@ def main():
 
     path_to_video_folder = path_to_data_root / config["data"]["debug_actions"]
 
-    path_to_csv_keypoits_folder = path_to_data_root / config["data"]["auto_layout"]
+    path_to_csv_keypoits_folder = path_to_data_root / config["data"]["auto_labeling"]
     classes = config["classes"]
     keypoints_pairs = config["keypoints"]["coco_pairs"]
 
@@ -25,7 +25,11 @@ def main():
     #     model, path_to_video_folder, path_to_csv_keypoits_folder, classes
     # )
     video_keypoints_factory(
-        path_to_video_folder, path_to_csv_keypoits_folder, classes, keypoints_pairs
+        path_to_video_folder,
+        path_to_csv_keypoits_folder,
+        classes,
+        keypoints_pairs,
+        auto_labeling=True,
     )
 
 

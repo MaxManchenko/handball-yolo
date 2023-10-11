@@ -5,7 +5,11 @@ import pathlib
 from pathlib import Path
 from typing import Dict, List
 
-from src.data.keypoints_handler import KeyPointsCSVWriter, KeyPointsVideoWriter
+from src.data.keypoints_handler import (
+    KeyPointsCSVWriter,
+    KeyPointsOnlyVideoWriter,
+    KeyPointsVideoWriter,
+)
 
 
 def csv_keypoints_factory(
@@ -47,6 +51,7 @@ def video_keypoints_factory(
     path_to_csv_keypoits_folder: pathlib.Path,
     classes: Dict[str, str],
     keypoints_pairs: List[List[int]],
+    auto_labeling: bool = False,
 ) -> None:
     """Writes key points from CSV to AVI files.
 
@@ -82,7 +87,10 @@ def video_keypoints_factory(
                 path_to_csv_keypoits_folder / class_ / (Path(csv).stem + ".avi")
             )
 
-            kp_video_writer = KeyPointsVideoWriter(keypoints_pairs)
+            if auto_labeling:
+                kp_video_writer = KeyPointsOnlyVideoWriter(keypoints_pairs)
+            else:
+                kp_video_writer = KeyPointsVideoWriter(keypoints_pairs)
             kp_video_writer.write_video_with_keypoints(
                 path_to_video_file_in,
                 path_to_video_file_out,
