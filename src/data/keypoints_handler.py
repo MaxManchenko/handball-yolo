@@ -4,6 +4,7 @@ import logging
 import os
 
 import cv2
+import numpy as np
 
 from src.data.video_handler import _get_video_params, _video_writer
 
@@ -16,10 +17,10 @@ class KeyPointsCSVWriter:
         self.logger = self._configure_logger()
 
     def _configure_logger(self) -> logging.Logger:
-        logger = logging.getLogger(__name__)
+        logger = logging.getLogger(f"{__name__}.{self.__class__.__name__}")
         if not logger.handlers:
             logger.setLevel(logging.WARNING)
-            handler = logging.FileHandler(f"loggs/{__name__}.log")
+            handler = logging.FileHandler("loggs/csv_writer.log")
             formatter = logging.Formatter("%(asctime)s - %(levelname)s - %(message)s")
             handler.setFormatter(formatter)
             logger.addHandler(handler)
@@ -101,11 +102,11 @@ class KeyPointsVideoWriter:
         self.logger = self._configure_logger()
 
     def _configure_logger(self) -> logging.Logger:
-        logger = logging.getLogger(__name__)
+        logger = logging.getLogger(f"{__name__}.{self.__class__.__name__}")
         if not logger.handlers:
             logger.setLevel(logging.INFO)
 
-            file_handler = logging.FileHandler(f"loggs/{__name__}.log")
+            file_handler = logging.FileHandler("loggs/video_writer.log")
             file_formatter = logging.Formatter(
                 "%(asctime)s - %(levelname)s - %(message)s"
             )
@@ -150,10 +151,56 @@ class KeyPointsVideoWriter:
             ) from err
         return keypoints_dict
 
+    def write_keypoints_on_frame(self, frame, frame_keypoints) -> np.ndarray:
+        """Overlay keypoints onto a video frame.
+
+        Args:
+            frame (np.ndarray): Video frame on which keypoints are to be drawn.
+            frame_keypoints (dict): Dictionary containing the keypoints for the frame.
+
+        Returns:
+            np.ndarray: The frame with keypoints drawn on it.
+        """
+        for person_keypoints in frame_keypoints.values():
+            # Draw points
+            for _, x, y, _ in person_keypoints:
+                cv2.circle(frame, (x, y), 3, (0, 0, 255), -1)
+
+            for i, j in self.keypoints_pairs:
+                # Ensure the indices are within bounds
+                if i < len(person_keypoints) and j < len(person_keypoints):
+                    _, x1, y1, _ = person_keypoints[i]
+                    _, x2, y2, _ = person_keypoints[j]
+                    cv2.line(
+                        frame,
+                        (x1, y1),
+                        (x2, y2),
+                        (0, 255, 0),
+                        2,
+                    )
+
+                else:
+                    error_message = f"Skipping line for out-of-bounds indices: {i}, {j}"
+                    self.logger.error(error_message)
+        return frame
+
+    def should_write_frame(self, frame_keypoints) -> bool:
+        """Determine whether a frame should be written to the output video.
+        This base method always returns True, meaning all frames are written.
+
+        Args:
+            frame (np.ndarray): Video frame being processed.
+            frame_keypoints (dict): Dictionary containing the keypoints for the frame.
+
+        Returns:
+            bool: True if the frame should be written, False otherwise.
+        """
+        return True
+
     def write_video_with_keypoints(
         self, video_path_in, video_path_out, csv_path_in
     ) -> None:
-        """Writes frames with pose estimations to an .avi video file."""
+        """Writes frames with pose estimations to an AVI video file."""
         try:
             keypoints_dict = self.read_keypoints_from_csv(csv_path_in)
             fps, width, height = _get_video_params(video_path_in)
@@ -167,34 +214,13 @@ class KeyPointsVideoWriter:
                     break  # Break the loop if we reach the end of the video
 
                 frame_keypoints = keypoints_dict.get(frame_index, {})
-                for person_keypoints in frame_keypoints.values():
-                    # Draw points
-                    for _, x, y, _ in person_keypoints:
-                        cv2.circle(frame, (x, y), 3, (0, 0, 255), -1)
-
-                    for i, j in self.keypoints_pairs:
-                        # Ensure the indices are within bounds
-                        if i < len(person_keypoints) and j < len(person_keypoints):
-                            _, x1, y1, _ = person_keypoints[i]
-                            _, x2, y2, _ = person_keypoints[j]
-                            cv2.line(
-                                frame,
-                                (x1, y1),
-                                (x2, y2),
-                                (0, 255, 0),
-                                2,
-                            )
-
-                        else:
-                            error_message = (
-                                f"Skipping line for out-of-bounds indices: {i}, {j}"
-                            )
-                            self.logger.error(error_message)
-
-                avi_writer.write(frame)
+                if self.should_write_frame(frame_keypoints):
+                    frame_with_keypoints = self.write_keypoints_on_frame(
+                        frame, frame_keypoints
+                    )
+                    avi_writer.write(frame_with_keypoints)
                 frame_index += 1
-            success_message = f"Success for the video {video_path_out}"
-            self.logger.info(success_message)
+
         except Exception as exc:
             error_message = f"Error processing video {video_path_in}: {exc}"
             self.logger.error(error_message)
@@ -202,3 +228,23 @@ class KeyPointsVideoWriter:
             cv2.destroyAllWindows()
             avi_writer.release()
             cap.release()
+
+        if os.path.getsize(video_path_out) == 0:
+            error_message = f"The output video file {video_path_out} is empty"
+            self.logger.error(error_message)
+        else:
+            success_message = f"Success for the video {video_path_out}"
+            self.logger.info(success_message)
+
+
+class KeyPointsOnlyVideoWriter(KeyPointsVideoWriter):
+    """Writes only the video frames containing keypoints to an AVI video file."""
+
+    def should_write_frame(self, frame_keypoints):
+        """
+        Args:
+            frame_keypoints (dict): Dictionary containing the keypoints for the frame.
+        Returns:
+            bool: True if the frame contains keypoints and should be written, False otherwise.
+        """
+        return any(frame_keypoints.values())

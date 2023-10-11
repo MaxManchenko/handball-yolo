@@ -1,10 +1,14 @@
 data:
   root: data
-  actions: raw/actions
-  scenes: raw/scenes
+  actions: interim/actions
+  scenes: interim/scenes
   csv_kpoints: processed/scenes
-  
-  debug: data/debug # for debugging
+
+  auto_labeling: processed/auto_labeling
+  debug_actions: debug/actions # for debugging
+  debug_scenes: debug/scenes
+  test: data/test
+  train: data/train
 
 
 

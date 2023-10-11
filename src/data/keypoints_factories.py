@@ -5,7 +5,11 @@ import pathlib
 from pathlib import Path
 from typing import Dict, List
 
-from src.data.keypoints_handler import KeyPointsCSVWriter, KeyPointsVideoWriter
+from src.data.keypoints_handler import (
+    KeyPointsCSVWriter,
+    KeyPointsOnlyVideoWriter,
+    KeyPointsVideoWriter,
+)
 
 
 def csv_keypoints_factory(
@@ -27,14 +31,16 @@ def csv_keypoints_factory(
             to correctly iterate over video folders.
     """
     for class_ in classes.values():
-        videos = glob.glob("*.mp4", root_dir=path_to_video_folder / class_)
+        mp4_videos = glob.glob("*.mp4", root_dir=path_to_video_folder / class_)
+        avi_videos = glob.glob("*.avi", root_dir=path_to_video_folder / class_)
+        videos = mp4_videos + avi_videos
         for video in videos:
             path_to_video_file_in = path_to_video_folder / class_ / video
             csv_file_name = Path(video).stem + ".csv"
             path_to_csv_file_out = path_to_csv_keypoits_folder / class_ / csv_file_name
 
             results = model(
-                source=path_to_video_file_in, conf=0.45, show=False, stream=True
+                source=path_to_video_file_in, conf=0.30, show=False, stream=True
             )
             kp_csv_writer = KeyPointsCSVWriter(results)
             kp_csv_writer.write_keypoints_to_csv(path_to_csv_file_out)
@@ -45,6 +51,7 @@ def video_keypoints_factory(
     path_to_csv_keypoits_folder: pathlib.Path,
     classes: Dict[str, str],
     keypoints_pairs: List[List[int]],
+    auto_labeling: bool = False,
 ) -> None:
     """Writes key points from CSV to AVI files.
 
@@ -65,14 +72,25 @@ def video_keypoints_factory(
         csvs = glob.glob("*.csv", root_dir=path_to_csv_keypoits_folder / class_)
         for csv in csvs:
             path_to_csv_file = path_to_csv_keypoits_folder / class_ / csv
+
+            # Try .mp4 extension first
             path_to_video_file_in = (
                 path_to_video_folder / class_ / (Path(csv).stem + ".mp4")
             )
+            # If .mp4 doesn't exist, try .avi extension
+            if not path_to_video_file_in.exists():
+                path_to_video_file_in = (
+                    path_to_video_folder / class_ / (Path(csv).stem + ".avi")
+                )
+
             path_to_video_file_out = (
                 path_to_csv_keypoits_folder / class_ / (Path(csv).stem + ".avi")
             )
 
-            kp_video_writer = KeyPointsVideoWriter(keypoints_pairs)
+            if auto_labeling:
+                kp_video_writer = KeyPointsOnlyVideoWriter(keypoints_pairs)
+            else:
+                kp_video_writer = KeyPointsVideoWriter(keypoints_pairs)
             kp_video_writer.write_video_with_keypoints(
                 path_to_video_file_in,
                 path_to_video_file_out,
