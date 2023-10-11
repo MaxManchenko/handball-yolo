@@ -27,14 +27,16 @@ def csv_keypoints_factory(
             to correctly iterate over video folders.
     """
     for class_ in classes.values():
-        videos = glob.glob("*.mp4", root_dir=path_to_video_folder / class_)
+        mp4_videos = glob.glob("*.mp4", root_dir=path_to_video_folder / class_)
+        avi_videos = glob.glob("*.avi", root_dir=path_to_video_folder / class_)
+        videos = mp4_videos + avi_videos
         for video in videos:
             path_to_video_file_in = path_to_video_folder / class_ / video
             csv_file_name = Path(video).stem + ".csv"
             path_to_csv_file_out = path_to_csv_keypoits_folder / class_ / csv_file_name
 
             results = model(
-                source=path_to_video_file_in, conf=0.45, show=False, stream=True
+                source=path_to_video_file_in, conf=0.30, show=False, stream=True
             )
             kp_csv_writer = KeyPointsCSVWriter(results)
             kp_csv_writer.write_keypoints_to_csv(path_to_csv_file_out)
@@ -65,9 +67,17 @@ def video_keypoints_factory(
         csvs = glob.glob("*.csv", root_dir=path_to_csv_keypoits_folder / class_)
         for csv in csvs:
             path_to_csv_file = path_to_csv_keypoits_folder / class_ / csv
+
+            # Try .mp4 extension first
             path_to_video_file_in = (
                 path_to_video_folder / class_ / (Path(csv).stem + ".mp4")
             )
+            # If .mp4 doesn't exist, try .avi extension
+            if not path_to_video_file_in.exists():
+                path_to_video_file_in = (
+                    path_to_video_folder / class_ / (Path(csv).stem + ".avi")
+                )
+
             path_to_video_file_out = (
                 path_to_csv_keypoits_folder / class_ / (Path(csv).stem + ".avi")
             )

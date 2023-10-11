@@ -193,8 +193,7 @@ class KeyPointsVideoWriter:
 
                 avi_writer.write(frame)
                 frame_index += 1
-            success_message = f"Success for the video {video_path_out}"
-            self.logger.info(success_message)
+
         except Exception as exc:
             error_message = f"Error processing video {video_path_in}: {exc}"
             self.logger.error(error_message)
@@ -202,3 +201,10 @@ class KeyPointsVideoWriter:
             cv2.destroyAllWindows()
             avi_writer.release()
             cap.release()
+
+        if os.path.getsize(video_path_out) == 0:
+            error_message = f"The output video file {video_path_out} is empty"
+            self.logger.error(error_message)
+        else:
+            success_message = f"Success for the video {video_path_out}"
+            self.logger.info(success_message)

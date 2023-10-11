@@ -19,6 +19,10 @@ __pycache__/
 /data/player_detections
 /data/scenes
 /data/debug/processed
+/data/debug/actions
+/data/test
+/data/auto_layout
+/loggs
 
 # Mypy cache
 .mypy_cache/
