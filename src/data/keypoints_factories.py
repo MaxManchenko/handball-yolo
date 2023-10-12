@@ -5,7 +5,7 @@ import pathlib
 from pathlib import Path
 from typing import Dict, List
 
-from utils.torch_utils import select_device
+from ultralytics.utils.torch_utils import select_device
 
 from src.data.keypoints_handler import (
     KeyPointsCSVWriter,

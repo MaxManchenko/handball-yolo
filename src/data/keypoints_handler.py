@@ -18,13 +18,7 @@ class KeyPointsCSVWriter:
         self.logger = self._configure_logger()
 
     def _configure_logger(self) -> logging.Logger:
-        logger = logging.getLogger(f"{__name__}.{self.__class__.__name__}")
-        if not logger.handlers:
-            logger.setLevel(logging.WARNING)
-            handler = logging.FileHandler("loggs/csv_writer.log")
-            formatter = logging.Formatter("%(asctime)s - %(levelname)s - %(message)s")
-            handler.setFormatter(formatter)
-            logger.addHandler(handler)
+        logger = setup_logger(f"{__name__}.{self.__class__.__name__}", "WARNING")
         return logger
 
     def extract_keypoints_from_frames(self) -> list:
