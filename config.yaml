@@ -2,7 +2,7 @@ data:
   root: data
   actions: interim/actions
   scenes: interim/scenes
-  csv_kpoints: processed/scenes
+  csv_kpoints: processed/scenes  
 
   auto_labeling: processed/auto_labeling
   debug_actions: debug/actions # for debugging
@@ -10,6 +10,15 @@ data:
   test: data/test
   train: data/train
 
+data_EC2:
+  root: data
+  actions: interim/actions
+  auto_labeling: procesed/auto_labeling # to store CSV's with keypoints
+
+S3:
+  bucket_name: hanball
+  actions: actions/
+  auto_labeling: auto_labeling/
 
 
 
@@ -25,6 +34,7 @@ classes:
 models:
   detection: models/yolov8n.pt
   pose: models/yolov8n-pose.pt
+  pose_gpu: models/yolo8x-pose-p6.pt  
 
 keypoints:
   coco_pairs:

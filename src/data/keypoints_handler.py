@@ -7,6 +7,7 @@ import cv2
 import numpy as np
 
 from src.data.video_handler import _get_video_params, _video_writer
+from src.utils.loggers import setup_logger
 
 
 class KeyPointsCSVWriter:
@@ -102,22 +103,7 @@ class KeyPointsVideoWriter:
         self.logger = self._configure_logger()
 
     def _configure_logger(self) -> logging.Logger:
-        logger = logging.getLogger(f"{__name__}.{self.__class__.__name__}")
-        if not logger.handlers:
-            logger.setLevel(logging.INFO)
-
-            file_handler = logging.FileHandler("loggs/video_writer.log")
-            file_formatter = logging.Formatter(
-                "%(asctime)s - %(levelname)s - %(message)s"
-            )
-            file_handler.setFormatter(file_formatter)
-            logger.addHandler(file_handler)
-
-            stream_handler = logging.StreamHandler()
-            stream_formatter = logging.Formatter("%(levelname)s - %(message)s")
-            stream_handler.setFormatter(stream_formatter)
-            logger.addHandler(stream_handler)
-
+        logger = setup_logger(f"{__name__}.{self.__class__.__name__}")
         return logger
 
     def read_keypoints_from_csv(self, csv_path_in) -> dict:
