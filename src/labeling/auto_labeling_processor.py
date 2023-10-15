@@ -32,7 +32,9 @@ def process_video(
     )
 
     if bucket_path_to_upload and bucket_name:
-        upload_data_to_s3(path_to_local_csv_folder, bucket_name, bucket_path_to_upload)
+        upload_data_to_s3(
+            path_to_local_csv_folder, bucket_name, bucket_path_to_upload, "loggs/S3.log"
+        )
 
 
 def main():
