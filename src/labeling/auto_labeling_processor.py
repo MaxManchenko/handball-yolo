@@ -20,7 +20,10 @@ def process_video(
 ) -> None:
     if bucket_path_to_download and bucket_name:
         download_data_from_S3(
-            bucket_name, bucket_path_to_download, path_to_local_csv_folder
+            bucket_name,
+            bucket_path_to_download,
+            path_to_local_csv_folder,
+            "loggs/S3.log",
         )
 
     model = initialize_yolo_model(path_to_model)
@@ -36,7 +39,7 @@ def main():
     config_params = get_config_params_for_autolabeling()
 
     process_video(
-        path_to_model=config_params["path_to model"],
+        path_to_model=config_params["path_to_model"],
         path_to_local_video_folder=config_params["path_to_local_video_folder"],
         path_to_local_csv_folder=config_params["path_to_local_csv_folder"],
         classes=config_params["classes"],

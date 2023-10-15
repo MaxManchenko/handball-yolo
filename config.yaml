@@ -13,7 +13,7 @@ data:
 data_EC2:
   root: data
   actions: interim/actions
-  auto_labeling: procesed/auto_labeling # to store CSV's with keypoints
+  auto_labeling: processed/auto_labeling # to store CSV's with keypoints
 
 S3:
   bucket_name: hanball

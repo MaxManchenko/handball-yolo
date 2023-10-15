@@ -22,7 +22,7 @@ def setup_logger(
     """
     logger = logging.getLogger(name)
     if not logger.handlers:
-        logger.setLevel(f"logging.{level}")
+        logger.setLevel(level)
 
         stream_handler = logging.StreamHandler()
         stream_formatter = logging.Formatter("%(levelname)s - %(message)s")

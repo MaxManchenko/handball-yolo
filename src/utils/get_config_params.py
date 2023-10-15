@@ -1,3 +1,5 @@
+from pathlib import Path
+
 from src.load_config import load_config
 
 
