@@ -22,7 +22,7 @@ def process_video(
         download_data_from_S3(
             bucket_name,
             bucket_path_to_download,
-            path_to_local_csv_folder,
+            path_to_local_video_folder,
             "loggs/S3.log",
         )
 
