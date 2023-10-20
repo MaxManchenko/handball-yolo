@@ -6,7 +6,7 @@ from typing import Dict, Optional
 from src.aws.data_exchange import download_data_from_S3, upload_data_to_s3
 from src.data.keypoints_factories import csv_keypoints_factory
 from src.models.initialize_models import initialize_yolo_model
-from src.utils.get_config_params import get_config_params_for_autolabeling
+from src.utils.get_config_params import get_config_params_for_autolabeling_debug_mode
 
 
 def process_video(
@@ -38,7 +38,7 @@ def process_video(
 
 
 def main():
-    config_params = get_config_params_for_autolabeling()
+    config_params = get_config_params_for_autolabeling_debug_mode()
 
     process_video(
         path_to_model=config_params["path_to_model"],

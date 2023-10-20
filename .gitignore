@@ -19,6 +19,7 @@ __pycache__/
 /data/processed
 /data/debug/processed
 /data/debug/actions
+/data/debug/auto_labeling
 /loggs/
 /models/
 
