@@ -3,6 +3,8 @@
 import pathlib
 from typing import Dict, Optional
 
+import mlflow
+
 from src.aws.data_exchange import download_data_from_S3, upload_data_to_s3
 from src.data.keypoints_factories import csv_keypoints_factory
 from src.models.initialize_models import initialize_yolo_model
