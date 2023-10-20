@@ -19,7 +19,8 @@ __pycache__/
 /data/processed
 /data/debug/processed
 /data/debug/actions
-/loggs
+/loggs/
+/models/
 
 # Mypy cache
 .mypy_cache/
