@@ -6,7 +6,7 @@ from typing import Dict, Optional
 
 import mlflow
 
-from src.aws.data_exchange import download_data_from_S3, upload_data_to_s3
+from src.aws.data_exchange_upd import download_data_from_S3, upload_data_to_s3
 from src.data.keypoints_factories import csv_keypoints_factory
 from src.models.initialize_models import initialize_yolo_model
 from src.utils.get_config_params import get_config_params_for_autolabeling_debug_mode
@@ -34,7 +34,7 @@ def process_video(
         "Experiment # 4 with S3", artifact_location=artifact_location
     )
     with mlflow.start_run(experiment_id=experiment_id):
-        conf = 0.32
+        conf = 0.30
         model = initialize_yolo_model(path_to_model)
         csv_keypoints_factory(
             model, path_to_local_video_folder, path_to_local_csv_folder, classes

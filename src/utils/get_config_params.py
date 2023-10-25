@@ -38,6 +38,7 @@ def get_config_params_for_autolabeling_locally():
         "bucket_name": config["S3"]["bucket_name"],
         "bucket_path_to_download": config["S3"]["actions"],
         "bucket_path_to_upload": config["S3"]["auto_labeling"],
+        "artifact_location": config["S3"]["artifact_location"],
     }
 
     params["path_to_local_video_folder"] = (
