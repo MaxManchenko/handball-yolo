@@ -22,6 +22,7 @@ __pycache__/
 /data/debug/auto_labeling
 /loggs/
 /models/
+/mlruns
 
 # Mypy cache
 .mypy_cache/
