@@ -1,13 +1,60 @@
+import json
 import os
 import pathlib
 from typing import Optional
 
 import boto3
+from botocore.exceptions import ClientError
 from dotenv import load_dotenv
 
 from src.utils.loggers import setup_logger
 
-load_dotenv("./.env")
+
+def get_local_secrets():
+    load_dotenv("./.env")
+    return {
+        "AWS_ACCESS_KEY_ID": os.getenv("AWS_ACCESS_KEY_ID"),
+        "AWS_SECRET_ACCESS_KEY": os.getenv("AWS_SECRET_ACCESS_KEY"),
+    }
+
+
+def get_production_secrets(secret_name="AWS-keys", region_name="eu-north-1"):
+    session = boto3.session.Session()
+    client = session.client(service_name="secretsmanager", region_name=region_name)
+
+    try:
+        get_secret_value_response = client.get_secret_value(SecretId=secret_name)
+    except ClientError as e:
+        raise e
+
+    secret = get_secret_value_response["SecretString"]
+    return json.loads(secret)
+
+
+# Determine which secrets to load based on RUN_ENV
+RUN_ENV = os.getenv("RUN_ENV", "local")
+if RUN_ENV == "local":
+    secrets = get_local_secrets()
+elif RUN_ENV == "production":
+    secrets = get_production_secrets()
+else:
+    raise ValueError(f"Unsupported RUN_ENV value: {RUN_ENV}")
+
+
+def create_s3_client():
+    return boto3.client(
+        "s3",
+        aws_access_key_id=secrets["AWS_ACCESS_KEY_ID"],
+        aws_secret_access_key=secrets["AWS_SECRET_ACCESS_KEY"],
+    )
+
+
+def create_s3_resource():
+    return boto3.resource(
+        "s3",
+        aws_access_key_id=secrets["AWS_ACCESS_KEY_ID"],
+        aws_secret_access_key=secrets["AWS_SECRET_ACCESS_KEY"],
+    )
 
 
 def download_data_from_S3(
@@ -31,7 +78,7 @@ def download_data_from_S3(
     """
     logger = setup_logger(name="S3_downloader", level="INFO", log_file=log_file)
 
-    s3 = boto3.resource("s3")
+    s3 = create_s3_resource()
     bucket = s3.Bucket(bucket_name)
 
     num_files_downloaded = 0
@@ -83,7 +130,7 @@ def upload_data_to_s3(
     """
     logger = setup_logger(name="S3_uploader", level="INFO", log_file=log_file)
 
-    s3 = boto3.client("s3")
+    s3 = create_s3_client()
 
     num_files_uploaded = 0
 

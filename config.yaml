@@ -22,7 +22,7 @@ S3:
   bucket_name: hanball
   actions: actions/
   auto_labeling: auto_labeling/
-  artifact_location: mlflow/auto_labeling # MLflow artifacts
+  artifact_location: s3://hanball/mlflow/auto_labeling # MLflow artifacts
 
 classes:
   0: crossing
