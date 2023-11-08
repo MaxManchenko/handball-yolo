@@ -21,16 +21,16 @@ def main():
 
     model = initialize_yolo_model(path_to_model)
 
-    # csv_keypoints_factory(
-    #     model, path_to_video_folder, path_to_csv_keypoits_folder, classes
-    # )
-    video_keypoints_factory(
-        path_to_video_folder,
-        path_to_csv_keypoits_folder,
-        classes,
-        keypoints_pairs,
-        auto_labeling=True,
+    csv_keypoints_factory(
+        model, path_to_video_folder, path_to_csv_keypoits_folder, classes
     )
+    # video_keypoints_factory(
+    #     path_to_video_folder,
+    #     path_to_csv_keypoits_folder,
+    #     classes,
+    #     keypoints_pairs,
+    #     auto_labeling=True,
+    # )
 
 
 if __name__ == "__main__":

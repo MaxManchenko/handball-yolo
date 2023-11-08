@@ -7,6 +7,7 @@ import cv2
 import numpy as np
 
 from src.data.video_handler import _get_video_params, _video_writer
+from src.utils.loggers import setup_logger
 
 
 class KeyPointsCSVWriter:
@@ -14,17 +15,20 @@ class KeyPointsCSVWriter:
 
     def __init__(self, results: str):
         self.results = results
-        self.logger = self._configure_logger()
+        self.warning_logger, self.info_logger = self._configure_logger()
 
-    def _configure_logger(self) -> logging.Logger:
-        logger = logging.getLogger(f"{__name__}.{self.__class__.__name__}")
-        if not logger.handlers:
-            logger.setLevel(logging.WARNING)
-            handler = logging.FileHandler("loggs/csv_writer.log")
-            formatter = logging.Formatter("%(asctime)s - %(levelname)s - %(message)s")
-            handler.setFormatter(formatter)
-            logger.addHandler(handler)
-        return logger
+    def _configure_logger(self) -> tuple[logging.Logger, logging.Logger]:
+        warning_logger = setup_logger(
+            f"{__name__}.{self.__class__.__name__}_warning",
+            "WARNING",
+            "loggs/csv_writer_warning.log",
+        )
+        info_logger = setup_logger(
+            f"{__name__}.{self.__class__.__name__}_info",
+            "INFO",
+            "loggs/csv_writer_info.log",
+        )
+        return warning_logger, info_logger
 
     def extract_keypoints_from_frames(self) -> list:
         """Extracts keypoints from a frame for each person detected."""
@@ -53,7 +57,7 @@ class KeyPointsCSVWriter:
                         error_message = (
                             f"Error processing keypoints at frame {frame_number}"
                         )
-                        self.logger(error_message)
+                        self.warning_logger.warning(error_message)
                         raise ValueError(
                             f"Error processing keypoints at frame {frame_number}"
                         ) from err
@@ -69,7 +73,7 @@ class KeyPointsCSVWriter:
         if not keypoints_list:
             video_file, _ = os.path.splitext(csv_path_out)
             warning_message = f"No keypoints extracted from the'{video_file}'"
-            self.logger.warning(warning_message)
+            self.warning_logger.warning(warning_message)
         else:
             try:
                 with open(csv_path_out, mode="w", newline="", encoding="utf-8") as file:
@@ -90,6 +94,8 @@ class KeyPointsCSVWriter:
                                         *keypoint,
                                     ]
                                 )
+                success_message = f"Succsess for the file {csv_path_out}"
+                self.info_logger.info(success_message)
             except IOError as err:
                 raise IOError(f"Error writing to {csv_path_out}: {err}") from err
 
@@ -102,22 +108,7 @@ class KeyPointsVideoWriter:
         self.logger = self._configure_logger()
 
     def _configure_logger(self) -> logging.Logger:
-        logger = logging.getLogger(f"{__name__}.{self.__class__.__name__}")
-        if not logger.handlers:
-            logger.setLevel(logging.INFO)
-
-            file_handler = logging.FileHandler("loggs/video_writer.log")
-            file_formatter = logging.Formatter(
-                "%(asctime)s - %(levelname)s - %(message)s"
-            )
-            file_handler.setFormatter(file_formatter)
-            logger.addHandler(file_handler)
-
-            stream_handler = logging.StreamHandler()
-            stream_formatter = logging.Formatter("%(levelname)s - %(message)s")
-            stream_handler.setFormatter(stream_formatter)
-            logger.addHandler(stream_handler)
-
+        logger = setup_logger(f"{__name__}.{self.__class__.__name__}")
         return logger
 
     def read_keypoints_from_csv(self, csv_path_in) -> dict:

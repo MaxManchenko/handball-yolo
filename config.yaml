@@ -2,16 +2,27 @@ data:
   root: data
   actions: interim/actions
   scenes: interim/scenes
-  csv_kpoints: processed/scenes
-
+  csv_kpoints: processed/scenes  
   auto_labeling: processed/auto_labeling
-  debug_actions: debug/actions # for debugging
+
+  # for debugging
+  debug_actions: debug/actions
   debug_scenes: debug/scenes
+  debug_auto_labeling: debug/auto_labeling
+
   test: data/test
   train: data/train
 
+data_EC2:
+  root: data
+  actions: interim/actions
+  auto_labeling: processed/auto_labeling # to store CSV's with keypoints
 
-
+S3:
+  bucket_name: hanball
+  actions: actions/
+  auto_labeling: auto_labeling/
+  artifact_location: s3://hanball/mlflow/auto_labeling # MLflow artifacts
 
 classes:
   0: crossing
@@ -25,6 +36,7 @@ classes:
 models:
   detection: models/yolov8n.pt
   pose: models/yolov8n-pose.pt
+  pose_gpu: models/yolo8l-pose.pt  
 
 keypoints:
   coco_pairs:

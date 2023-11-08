@@ -19,7 +19,10 @@ __pycache__/
 /data/processed
 /data/debug/processed
 /data/debug/actions
-/loggs
+/data/debug/auto_labeling
+/loggs/
+/models/
+/mlruns
 
 # Mypy cache
 .mypy_cache/

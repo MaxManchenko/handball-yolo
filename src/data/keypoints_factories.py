@@ -5,6 +5,8 @@ import pathlib
 from pathlib import Path
 from typing import Dict, List
 
+from ultralytics.utils.torch_utils import select_device
+
 from src.data.keypoints_handler import (
     KeyPointsCSVWriter,
     KeyPointsOnlyVideoWriter,
@@ -17,6 +19,7 @@ def csv_keypoints_factory(
     path_to_video_folder: pathlib.Path,
     path_to_csv_keypoits_folder: pathlib.Path,
     classes: Dict[str, str],
+    device: str = "cpu",
 ) -> None:
     """Exctarct keypoins from videos and write them to CSV files.
 
@@ -29,7 +32,11 @@ def csv_keypoints_factory(
         classes (Dict[str, str]):
             The classes (ex. "crossing", defence", "shot", and etc.)
             to correctly iterate over video folders.
+        device (str): Compute device ('cpu' or 'cuda'). Default is 'cpu'.
     """
+    device = select_device(device)
+    model = model.to(device)
+
     for class_ in classes.values():
         mp4_videos = glob.glob("*.mp4", root_dir=path_to_video_folder / class_)
         avi_videos = glob.glob("*.avi", root_dir=path_to_video_folder / class_)

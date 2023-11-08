@@ -5,10 +5,10 @@ __pycache__/
 
 .ipynb_checkpoints/
 
-/data/actions
-/data/player_detections
-/data/scenes
+/data/interim
+/data/processed
 /data/debug/processed
+/data/debug/auto_labeling
 
 /models/
 /src/
