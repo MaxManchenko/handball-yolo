@@ -7,6 +7,7 @@ import boto3
 from botocore.exceptions import ClientError
 from dotenv import load_dotenv
 
+from config import AutoLabelingMode, set_autolabeling_mode
 from src.utils.loggers import setup_logger
 
 
@@ -18,7 +19,7 @@ def get_local_secrets():
     }
 
 
-def get_production_secrets(secret_name="AWS-keys", region_name="eu-north-1"):
+def get_AWS_secrets(secret_name="AWS-keys", region_name="eu-north-1"):
     session = boto3.session.Session()
     client = session.client(service_name="secretsmanager", region_name=region_name)
 
@@ -31,14 +32,15 @@ def get_production_secrets(secret_name="AWS-keys", region_name="eu-north-1"):
     return json.loads(secret)
 
 
-# Determine which secrets to load based on RUN_ENV
-RUN_ENV = os.getenv("RUN_ENV", "local")
-if RUN_ENV == "local":
+# Determine which secrets to load based on run_env
+run_env = set_autolabeling_mode()
+
+if run_env == AutoLabelingMode.LOCAL or AutoLabelingMode.DEBUG:
     secrets = get_local_secrets()
-elif RUN_ENV == "production":
-    secrets = get_production_secrets()
+elif run_env == AutoLabelingMode.AWS:
+    secrets = get_AWS_secrets()
 else:
-    raise ValueError(f"Unsupported RUN_ENV value: {RUN_ENV}")
+    raise ValueError(f"Unsupported run_env value: {run_env}")
 
 
 def create_s3_client():
