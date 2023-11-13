@@ -7,12 +7,12 @@ class AutoLabelingMode(Enum):
     AWS = "AWS"
     DEBUG = "DEBUG"
 
-    @staticmethod
-    def get_mode_from_user_input(s: str):
+    @classmethod
+    def get_mode_from_user_input(cls, s: str):
         try:
-            return AutoLabelingMode(s.upper())
+            return cls[s.upper()]
         except KeyError:
-            return AutoLabelingMode.LOCAL
+            return cls.LOCAL
 
 
 def set_autolabeling_mode():

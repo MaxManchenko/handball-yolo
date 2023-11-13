@@ -27,19 +27,18 @@ def process_video(
     bucket_path_to_upload: Optional[str] = None,
     artifact_location: Optional[str] = None,
 ) -> None:
-    # if bucket_path_to_download and bucket_name:
-    #     download_data_from_S3(
-    #         bucket_name,
-    #         bucket_path_to_download,
-    #         path_to_local_video_folder,
-    #         "loggs/S3.log",
-    #     )
+    if bucket_path_to_download and bucket_name:
+        download_data_from_S3(
+            bucket_name,
+            bucket_path_to_download,
+            path_to_local_video_folder,
+            "loggs/S3.log",
+        )
 
     experiment_id = mlflow.create_experiment(
-        "Experiment # 1 with S3", artifact_location=artifact_location
+        "Experiment #1 Atolabeling on AWS", artifact_location=artifact_location
     )
     with mlflow.start_run(experiment_id=experiment_id):
-        conf = 0.10
         model = initialize_yolo_model(path_to_model)
         csv_keypoints_factory(
             model, path_to_local_video_folder, path_to_local_csv_folder, classes
@@ -48,10 +47,10 @@ def process_video(
         mlflow.log_params({"confidence": conf})
         mlflow.log_artifacts("loggs")
 
-    # if bucket_path_to_upload and bucket_name:
-    #     upload_data_to_s3(
-    #         path_to_local_csv_folder, bucket_name, bucket_path_to_upload, "loggs/S3.log"
-    #     )
+    if bucket_path_to_upload and bucket_name:
+        upload_data_to_s3(
+            path_to_local_csv_folder, bucket_name, bucket_path_to_upload, "loggs/S3.log"
+        )
 
 
 def main():
