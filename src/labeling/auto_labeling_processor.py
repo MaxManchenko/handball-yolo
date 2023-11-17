@@ -53,7 +53,6 @@ def process_video(
 
 
 def main():
-    # config_params = get_config_params_for_autolabeling_debug_mode()
     run_env = set_autolabeling_mode()
 
     if run_env == AutoLabelingMode.AWS:
