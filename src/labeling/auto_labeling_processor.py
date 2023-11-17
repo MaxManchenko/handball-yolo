@@ -36,7 +36,7 @@ def process_video(
         )
 
     experiment_id = mlflow.create_experiment(
-        "Experiment #1 Atolabeling on AWS", artifact_location=artifact_location
+        "Atolabeling on AWS", artifact_location=artifact_location
     )
     with mlflow.start_run(experiment_id=experiment_id):
         model = initialize_yolo_model(path_to_model)
@@ -44,7 +44,6 @@ def process_video(
             model, path_to_local_video_folder, path_to_local_csv_folder, classes
         )
         mlflow.set_tag("model", path_to_model)
-        mlflow.log_params({"confidence": conf})
         mlflow.log_artifacts("loggs")
 
     if bucket_path_to_upload and bucket_name:
