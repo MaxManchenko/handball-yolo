@@ -21,13 +21,11 @@ __pycache__/
 /data/debug/actions
 /data/debug/auto_labeling
 /loggs/
-/models/
+/models
 /mlruns
 
 # Mypy cache
 .mypy_cache/
 
 .pytest_cache/
-LICENSE
-Makefile
 test_environment.py

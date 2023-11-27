@@ -1,6 +1,4 @@
 """The module provides the pipeline to extract keypoints from videos and write them to CSV files."""
-
-import os
 import pathlib
 from typing import Dict, Optional
 

@@ -11,7 +11,7 @@ def main():
     config = load_config()
     path_to_model = config["models"]["pose"]
     path_to_data_root = Path(config["data"]["root"])
-    # path_to_video_folder = path_to_data_root / config["data"]["actions"]
+    path_to_video_folder = path_to_data_root / config["data"]["actions"]
 
     path_to_video_folder = path_to_data_root / config["data"]["debug_actions"]
 
@@ -24,13 +24,13 @@ def main():
     csv_keypoints_factory(
         model, path_to_video_folder, path_to_csv_keypoits_folder, classes
     )
-    # video_keypoints_factory(
-    #     path_to_video_folder,
-    #     path_to_csv_keypoits_folder,
-    #     classes,
-    #     keypoints_pairs,
-    #     auto_labeling=True,
-    # )
+    video_keypoints_factory(
+        path_to_video_folder,
+        path_to_csv_keypoits_folder,
+        classes,
+        keypoints_pairs,
+        auto_labeling=True,
+    )
 
 
 if __name__ == "__main__":
